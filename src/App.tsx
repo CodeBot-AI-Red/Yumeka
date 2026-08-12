@@ -3,7 +3,7 @@ import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import AppRoutes from './routes/AppRoutes'
 
-const AUTH_ROUTES = ['/login', '/registro']
+const AUTH_ROUTES = ['/login', '/registro', '/auth/callback']
 
 function AppLayout() {
   const location = useLocation()
