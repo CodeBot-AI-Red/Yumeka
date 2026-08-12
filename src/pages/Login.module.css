@@ -1,0 +1,474 @@
+/* =============================================
+   Login — layout de tela dividida
+   ============================================= */
+
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* =============================================
+   Painel visual (esquerda)
+   ============================================= */
+.visual {
+  position: relative;
+  background: linear-gradient(160deg, #120710 0%, #1e0c18 45%, #0e0c1a 100%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Textura de ruído */
+.visualNoise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* Glow radial */
+.visualGlow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 55% at 30% 40%, rgba(225,29,72,0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 40% at 80% 75%, rgba(139,92,246,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Kanji flutuantes */
+.floatK1,
+.floatK2,
+.floatK3 {
+  position: absolute;
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+.floatK1 {
+  font-size: 280px;
+  color: rgba(225, 29, 72, 0.055);
+  top: -40px;
+  right: -60px;
+  animation: drift1 18s ease-in-out infinite alternate;
+}
+
+.floatK2 {
+  font-size: 120px;
+  color: rgba(139, 92, 246, 0.07);
+  bottom: 60px;
+  left: -20px;
+  transform: rotate(-20deg);
+  animation: drift2 14s ease-in-out infinite alternate;
+}
+
+.floatK3 {
+  font-size: 60px;
+  color: rgba(225, 29, 72, 0.08);
+  top: 40%;
+  left: 18%;
+  transform: rotate(10deg);
+  animation: drift3 22s ease-in-out infinite alternate;
+}
+
+@keyframes drift1 {
+  from { transform: translateY(0px) rotate(0deg); }
+  to   { transform: translateY(20px) rotate(3deg); }
+}
+@keyframes drift2 {
+  from { transform: translateY(0px) rotate(-20deg); }
+  to   { transform: translateY(-16px) rotate(-14deg); }
+}
+@keyframes drift3 {
+  from { transform: translateY(0px) rotate(10deg); }
+  to   { transform: translateY(12px) rotate(6deg); }
+}
+
+/* Conteúdo central do painel */
+.visualContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Tabs de kanji clicáveis */
+.highlightTabs {
+  display: flex;
+  gap: 10px;
+}
+
+.highlightTab {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: rgba(255,255,255,0.35);
+  cursor: pointer;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.highlightTab:hover {
+  color: rgba(255,255,255,0.65);
+  background: rgba(255,255,255,0.08);
+}
+.highlightTab.highlightTabActive {
+  border-color: var(--accent);
+  background: rgba(225,29,72,0.12);
+  color: var(--accent);
+}
+
+.highlightLabel {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-align: center;
+  transition: opacity 0.3s;
+}
+
+.highlightKanji {
+  font-family: var(--font-display);
+  font-size: 96px;
+  font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1;
+  text-shadow: 0 0 60px rgba(225,29,72,0.4);
+  transition: opacity 0.3s;
+  user-select: none;
+}
+
+/* Rodapé do painel */
+.visualFooter {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.visualStat {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.visualStatLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.visualDot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* =============================================
+   Painel do formulário (direita)
+   ============================================= */
+.formPanel {
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+  position: relative;
+}
+
+/* Logo no topo */
+.logo {
+  position: absolute;
+  top: 32px;
+  left: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.logoText {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+/* Caixa do formulário */
+.formBox {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formHead {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Banner de erro */
+.errorBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(225,29,72,0.08);
+  border: 1px solid rgba(225,29,72,0.25);
+  border-radius: var(--radius);
+  color: #fca5a5;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Botão Google */
+.googleBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 11px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+.googleBtn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+.googleBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Divisor */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.dividerText {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Formulário */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.forgotLink {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.forgotLink:hover { color: var(--accent); }
+
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input::placeholder { color: var(--text-muted); }
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(225,29,72,0.12);
+}
+.input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.inputPass {
+  padding-right: 46px;
+}
+
+.passwordWrap {
+  position: relative;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+}
+.eyeBtn:hover { color: var(--text-secondary); }
+
+.submitBtn {
+  width: 100%;
+  height: 44px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font-body);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.submitBtn:hover:not(:disabled) {
+  background: var(--accent-dim);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(225,29,72,0.35);
+}
+.submitBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Spinner */
+.spinner {
+  animation: spin 0.75s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Prompt de registro */
+.registerPrompt {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.registerLink {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.registerLink:hover { color: var(--accent-dim); }
+
+/* =============================================
+   Responsivo
+   ============================================= */
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+  .visual {
+    display: none;
+  }
+  .formPanel {
+    justify-content: flex-start;
+    padding-top: calc(var(--nav-h) + 40px);
+  }
+  .logo {
+    top: calc(var(--nav-h) / 2 - 14px);
+    left: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .formPanel {
+    padding: calc(var(--nav-h) + 32px) 24px 40px;
+  }
+  .title {
+    font-size: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floatK1, .floatK2, .floatK3 {
+    animation: none;
+  }
+  .spinner {
+    animation: none;
+  }
+}
