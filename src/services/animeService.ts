@@ -9,12 +9,11 @@ const api = axios.create({
 const delay = (ms: number) => new Promise(r => setTimeout(r, ms))
 
 export type SortOption = 'bypopularity' | 'score' | 'airing' | 'upcoming' | 'favorite'
-export type GenreId = number
 
 export interface BrowseParams {
   query?: string
   sort?: SortOption
-  genres?: GenreId[]
+  genres?: number[]
   page?: number
   limit?: number
 }
@@ -40,6 +39,79 @@ export const GENRES = [
   { id: 30, name: 'Esportes' },
   { id: 37, name: 'Sobrenatural' },
 ]
+
+// Mapeia sort para parâmetros corretos da Jikan
+function buildParams(sort: SortOption, genres: number[], page: number, limit: number, query?: string) {
+  const genreStr = genres.length > 0 ? genres.join(',') : undefined
+
+  // Com busca textual → endpoint /anime com order_by
+  if (query?.trim()) {
+    const orderBy: Record<SortOption, string> = {
+      bypopularity: 'members',
+      score:        'score',
+      airing:       'members',
+      upcoming:     'members',
+      favorite:     'favorites',
+    }
+    return {
+      endpoint: '/anime',
+      params: {
+        q: query.trim(),
+        order_by: orderBy[sort],
+        sort: 'desc',
+        genres: genreStr,
+        page,
+        limit,
+        sfw: true,
+      },
+    }
+  }
+
+  // Sem busca → /top/anime (filter só aceita: airing, upcoming, bypopularity, favorite)
+  // score não existe como filter → usamos /anime com order_by=score
+  if (sort === 'score' || genres.length > 0) {
+    const orderBy: Record<SortOption, string> = {
+      bypopularity: 'members',
+      score:        'score',
+      airing:       'members',
+      upcoming:     'start_date',
+      favorite:     'favorites',
+    }
+    const statusMap: Partial<Record<SortOption, string>> = {
+      airing:   'airing',
+      upcoming: 'upcoming',
+    }
+    return {
+      endpoint: '/anime',
+      params: {
+        order_by: orderBy[sort],
+        sort: 'desc',
+        status: statusMap[sort],
+        genres: genreStr,
+        page,
+        limit,
+        sfw: true,
+      },
+    }
+  }
+
+  // Caso simples: /top/anime com filter nativo
+  const filterMap: Record<SortOption, string> = {
+    bypopularity: 'bypopularity',
+    score:        'bypopularity', // fallback (não chega aqui)
+    airing:       'airing',
+    upcoming:     'upcoming',
+    favorite:     'favorite',
+  }
+  return {
+    endpoint: '/top/anime',
+    params: {
+      filter: filterMap[sort],
+      page,
+      limit,
+    },
+  }
+}
 
 export const animeService = {
   async getTopAiring(): Promise<Anime[]> {
@@ -67,33 +139,23 @@ export const animeService = {
 
   async search(query: string): Promise<Anime[]> {
     const { data } = await api.get<JikanResponse<Anime[]>>('/anime', {
-      params: { q: query, limit: 12, order_by: 'popularity', sort: 'asc' },
+      params: { q: query, limit: 12, order_by: 'members', sort: 'desc' },
     })
     return data.data
   },
 
   async browse({ query, sort = 'bypopularity', genres = [], page = 1, limit = 24 }: BrowseParams): Promise<BrowseResult> {
-    const params: Record<string, unknown> = { page, limit }
+    const { endpoint, params } = buildParams(sort, genres, page, limit, query)
 
-    if (query?.trim()) {
-      // busca por texto
-      params.q = query.trim()
-      params.order_by = sort === 'score' ? 'score' : 'popularity'
-      params.sort = 'desc'
-    } else {
-      // top/anime aceita filter
-      params.filter = sort
-    }
+    // Remove params undefined para não mandar na query
+    const cleanParams = Object.fromEntries(
+      Object.entries(params).filter(([, v]) => v !== undefined)
+    )
 
-    if (genres.length > 0) {
-      params.genres = genres.join(',')
-    }
-
-    const endpoint = query?.trim() ? '/anime' : '/top/anime'
-    const { data } = await api.get<JikanResponse<Anime[]>>(endpoint, { params })
+    const { data } = await api.get<JikanResponse<Anime[]>>(endpoint, { params: cleanParams })
 
     return {
-      animes: data.data,
+      animes: data.data ?? [],
       hasNextPage: data.pagination?.has_next_page ?? false,
       currentPage: data.pagination?.current_page ?? page,
       total: data.pagination?.items?.total ?? 0,
