@@ -79,7 +79,8 @@ export const authService = {
       body: JSON.stringify({
         email,
         password,
-        data: { name },
+        // name em data → salva em user_metadata no Supabase Auth Users
+        data: { name, full_name: name },
       }),
     })
 
@@ -122,6 +123,50 @@ export const authService = {
 
     persistSession(session)
     return session
+  },
+
+  // Busca dados do usuário autenticado via token
+  async getUser(accessToken: string) {
+    const response = await fetch(`${supabaseAuthUrl}/user`, {
+      headers: {
+        apikey: supabaseConfig.anonKey,
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    if (!response.ok) return null
+
+    return await response.json() as {
+      id: string
+      email: string
+      user_metadata: Record<string, string>
+    }
+  },
+
+  // Atualiza o nome (user_metadata) do usuário autenticado
+  async updateDisplayName(name: string) {
+    const session = this.getSession()
+    if (!session) throw new Error('Sessão não encontrada.')
+
+    const response = await fetch(`${supabaseAuthUrl}/user`, {
+      method: 'PUT',
+      headers: {
+        apikey: supabaseConfig.anonKey,
+        Authorization: `Bearer ${session.accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: { name, full_name: name },
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.error_description ?? data.msg ?? 'Não foi possível salvar o nome.')
+    }
+
+    return data
   },
 
   getSession() {
