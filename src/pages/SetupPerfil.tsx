@@ -1,4 +1,4 @@
-import { useState, useId } from 'react'
+import { useState, useId, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '../services/authService'
 import styles from './SetupPerfil.module.css'
@@ -39,10 +39,26 @@ export default function SetupPerfil() {
   const id = useId()
   const navigate = useNavigate()
 
-  const [name, setName]     = useState('')
+  const [name, setName]       = useState('')
   const [loading, setLoading] = useState(false)
-  const [error, setError]   = useState<string | null>(null)
+  const [error, setError]     = useState<string | null>(null)
   const [touched, setTouched] = useState(false)
+
+  // Redireciona se não há sessão
+  useEffect(() => {
+    if (!authService.getSession()) {
+      navigate('/login', { replace: true })
+    }
+  }, [navigate])
+
+  // Preenche sugestão com nome que veio do Google (se houver)
+  useEffect(() => {
+    const session = authService.getSession()
+    if (!session) return
+    authService.getProfile(session.accessToken).then(profile => {
+      if (profile?.display_name) setName(profile.display_name)
+    })
+  }, [])
 
   const nameOk = name.trim().length >= 2
 
@@ -53,7 +69,7 @@ export default function SetupPerfil() {
     setError(null)
     setLoading(true)
     try {
-      await authService.updateDisplayName(name.trim())
+      await authService.saveDisplayName(name.trim())
       navigate('/', { replace: true })
     } catch {
       setError('Não foi possível salvar seu nome. Tente novamente.')
@@ -65,7 +81,6 @@ export default function SetupPerfil() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        {/* Logo */}
         <div className={styles.logo}>
           <LogoIcon />
           <span className={styles.logoText}>Yumeka</span>

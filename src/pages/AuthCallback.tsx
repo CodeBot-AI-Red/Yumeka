@@ -10,23 +10,18 @@ export default function AuthCallback() {
     const run = async () => {
       try {
         const session = authService.handleOAuthCallback()
+        const profile = await authService.getProfile(session.accessToken)
 
-        // Busca dados do usuário para checar se já tem nome definido
-        const user = await authService.getUser(session.accessToken)
-        const hasName = user?.user_metadata?.name || user?.user_metadata?.full_name
-
-        if (hasName) {
-          // Usuário OAuth que já passou pelo setup antes
+        if (profile?.profile_completed) {
           navigate('/', { replace: true })
         } else {
-          // Usuário novo — pedir nome
+          // Usuário novo ou que ainda não confirmou o nome
           navigate('/setup-perfil', { replace: true })
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Não foi possível concluir o login com Google.')
       }
     }
-
     run()
   }, [navigate])
 
