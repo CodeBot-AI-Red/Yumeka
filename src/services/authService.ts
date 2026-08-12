@@ -9,6 +9,13 @@ export interface AuthSession {
   tokenType?: string
 }
 
+export interface UserProfile {
+  id: string
+  display_name: string
+  avatar_url: string | null
+  profile_completed: boolean
+}
+
 function getRedirectTo() {
   return `${window.location.origin}/auth/callback`
 }
@@ -20,7 +27,6 @@ function persistSession(session: AuthSession) {
 function parseAuthParams(search: string, hash: string) {
   const hashParams = new URLSearchParams(hash.replace(/^#/, ''))
   const searchParams = new URLSearchParams(search)
-
   return {
     accessToken: hashParams.get('access_token') ?? searchParams.get('access_token'),
     refreshToken: hashParams.get('refresh_token') ?? searchParams.get('refresh_token') ?? undefined,
@@ -30,18 +36,32 @@ function parseAuthParams(search: string, hash: string) {
   }
 }
 
+// Requisição autenticada para a REST API do Supabase (schema public)
+async function supabaseRest(path: string, options: RequestInit = {}, token: string) {
+  const res = await fetch(`${supabaseConfig.url}/rest/v1${path}`, {
+    ...options,
+    headers: {
+      apikey: supabaseConfig.anonKey,
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=representation',
+      ...(options.headers ?? {}),
+    },
+  })
+  return res
+}
+
 export const authService = {
   signInWithGoogle() {
     const params = new URLSearchParams({
       provider: 'google',
       redirect_to: getRedirectTo(),
     })
-
     window.location.assign(`${supabaseAuthUrl}/authorize?${params.toString()}`)
   },
 
   async signIn(email: string, password: string) {
-    const response = await fetch(`${supabaseAuthUrl}/token?grant_type=password`, {
+    const res = await fetch(`${supabaseAuthUrl}/token?grant_type=password`, {
       method: 'POST',
       headers: {
         apikey: supabaseConfig.anonKey,
@@ -50,26 +70,20 @@ export const authService = {
       },
       body: JSON.stringify({ email, password }),
     })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new Error(data.error_description ?? data.msg ?? 'Não foi possível entrar.')
-    }
-
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error_description ?? data.msg ?? 'Não foi possível entrar.')
     const session: AuthSession = {
       accessToken: data.access_token,
       refreshToken: data.refresh_token,
       expiresAt: data.expires_in ? Date.now() + data.expires_in * 1000 : undefined,
       tokenType: data.token_type,
     }
-
     persistSession(session)
     return session
   },
 
   async signUp(name: string, email: string, password: string) {
-    const response = await fetch(`${supabaseAuthUrl}/signup`, {
+    const res = await fetch(`${supabaseAuthUrl}/signup`, {
       method: 'POST',
       headers: {
         apikey: supabaseConfig.anonKey,
@@ -79,40 +93,27 @@ export const authService = {
       body: JSON.stringify({
         email,
         password,
-        // name em data → salva em user_metadata no Supabase Auth Users
         data: { name, full_name: name },
       }),
     })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new Error(data.error_description ?? data.msg ?? 'Não foi possível criar sua conta.')
-    }
-
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error_description ?? data.msg ?? 'Não foi possível criar sua conta.')
     if (data.access_token) {
-      persistSession({
+      const session: AuthSession = {
         accessToken: data.access_token,
         refreshToken: data.refresh_token,
         expiresAt: data.expires_in ? Date.now() + data.expires_in * 1000 : undefined,
         tokenType: data.token_type,
-      })
+      }
+      persistSession(session)
     }
-
     return data
   },
 
   handleOAuthCallback(search = window.location.search, hash = window.location.hash) {
     const params = parseAuthParams(search, hash)
-
-    if (params.error) {
-      throw new Error(params.error)
-    }
-
-    if (!params.accessToken) {
-      throw new Error('O Google não retornou uma sessão válida.')
-    }
-
+    if (params.error) throw new Error(params.error)
+    if (!params.accessToken) throw new Error('O Google não retornou uma sessão válida.')
     const expiresIn = params.expiresIn ? Number(params.expiresIn) : undefined
     const session: AuthSession = {
       accessToken: params.accessToken,
@@ -120,52 +121,49 @@ export const authService = {
       expiresAt: expiresIn ? Date.now() + expiresIn * 1000 : undefined,
       tokenType: params.tokenType,
     }
-
     persistSession(session)
     return session
   },
 
-  // Busca dados do usuário autenticado via token
-  async getUser(accessToken: string) {
-    const response = await fetch(`${supabaseAuthUrl}/user`, {
-      headers: {
-        apikey: supabaseConfig.anonKey,
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-
-    if (!response.ok) return null
-
-    return await response.json() as {
-      id: string
-      email: string
-      user_metadata: Record<string, string>
-    }
+  // Busca perfil do usuário na tabela public.profiles
+  async getProfile(accessToken: string): Promise<UserProfile | null> {
+    const res = await supabaseRest('/profiles?select=*&limit=1', {}, accessToken)
+    if (!res.ok) return null
+    const data = await res.json()
+    return data[0] ?? null
   },
 
-  // Atualiza o nome (user_metadata) do usuário autenticado
-  async updateDisplayName(name: string) {
+  // Salva/atualiza display_name e marca profile_completed = true
+  async saveDisplayName(name: string) {
     const session = this.getSession()
     if (!session) throw new Error('Sessão não encontrada.')
 
-    const response = await fetch(`${supabaseAuthUrl}/user`, {
-      method: 'PUT',
+    // Primeiro busca o id do usuário
+    const userRes = await fetch(`${supabaseAuthUrl}/user`, {
       headers: {
         apikey: supabaseConfig.anonKey,
         Authorization: `Bearer ${session.accessToken}`,
-        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        data: { name, full_name: name },
-      }),
     })
+    if (!userRes.ok) throw new Error('Não foi possível buscar o usuário.')
+    const user = await userRes.json()
 
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new Error(data.error_description ?? data.msg ?? 'Não foi possível salvar o nome.')
-    }
-
+    // Upsert no profiles
+    const res = await supabaseRest(
+      '/profiles',
+      {
+        method: 'POST',
+        headers: { Prefer: 'resolution=merge-duplicates,return=representation' },
+        body: JSON.stringify({
+          id: user.id,
+          display_name: name,
+          profile_completed: true,
+        }),
+      },
+      session.accessToken,
+    )
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.message ?? 'Não foi possível salvar o nome.')
     return data
   },
 
