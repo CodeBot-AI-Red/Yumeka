@@ -1,5 +1,6 @@
 import { useState, useId } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { authService } from '../services/authService'
 import styles from './Login.module.css'
 
 /* ─── Ícones ────────────────────────────────────────────────── */
@@ -66,8 +67,7 @@ export default function Login() {
     setError(null)
     setLoading(true)
     try {
-      // TODO: substituir por authService.signIn(email, password)
-      await new Promise(r => setTimeout(r, 800))
+      await authService.signIn(email.trim(), password)
       navigate('/')
     } catch {
       setError('E-mail ou senha incorretos. Verifique e tente novamente.')
@@ -80,9 +80,7 @@ export default function Login() {
     setError(null)
     setLoading(true)
     try {
-      // TODO: substituir por authService.signInWithGoogle()
-      await new Promise(r => setTimeout(r, 600))
-      navigate('/')
+      authService.signInWithGoogle()
     } catch {
       setError('Não foi possível entrar com o Google. Tente novamente.')
     } finally {

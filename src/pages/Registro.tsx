@@ -1,5 +1,6 @@
 import { useState, useId } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { authService } from '../services/authService'
 import styles from './Registro.module.css'
 
 /* ─── Ícones ────────────────────────────────────────────────── */
@@ -139,8 +140,7 @@ export default function Registro() {
     setError(null)
     setLoading(true)
     try {
-      // TODO: substituir por authService.signUp(name, email, password)
-      await new Promise(r => setTimeout(r, 900))
+      await authService.signUp(name.trim(), email.trim(), password)
       navigate('/')
     } catch {
       setError('Não foi possível criar sua conta. Tente novamente.')
@@ -153,9 +153,7 @@ export default function Registro() {
     setError(null)
     setLoading(true)
     try {
-      // TODO: substituir por authService.signInWithGoogle()
-      await new Promise(r => setTimeout(r, 600))
-      navigate('/')
+      authService.signInWithGoogle()
     } catch {
       setError('Não foi possível entrar com o Google. Tente novamente.')
     } finally {
