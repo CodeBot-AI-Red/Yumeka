@@ -8,6 +8,7 @@ import Login from '../pages/Login'
 import Registro from '../pages/Registro'
 import Assinatura from '../pages/Assinatura'
 import AuthCallback from '../pages/AuthCallback'
+import SetupPerfil from '../pages/SetupPerfil'
 
 export default function AppRoutes() {
   return (
@@ -21,6 +22,7 @@ export default function AppRoutes() {
       <Route path="/registro" element={<Registro />} />
       <Route path="/assinatura" element={<Assinatura />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route path="/setup-perfil" element={<SetupPerfil />} />
     </Routes>
   )
 }
