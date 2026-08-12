@@ -7,12 +7,27 @@ export default function AuthCallback() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    try {
-      authService.handleOAuthCallback()
-      navigate('/', { replace: true })
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Não foi possível concluir o login com Google.')
+    const run = async () => {
+      try {
+        const session = authService.handleOAuthCallback()
+
+        // Busca dados do usuário para checar se já tem nome definido
+        const user = await authService.getUser(session.accessToken)
+        const hasName = user?.user_metadata?.name || user?.user_metadata?.full_name
+
+        if (hasName) {
+          // Usuário OAuth que já passou pelo setup antes
+          navigate('/', { replace: true })
+        } else {
+          // Usuário novo — pedir nome
+          navigate('/setup-perfil', { replace: true })
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Não foi possível concluir o login com Google.')
+      }
     }
+
+    run()
   }, [navigate])
 
   if (error) {
