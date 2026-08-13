@@ -1,0 +1,457 @@
+/* =============================================
+   Assinatura — Yumeka
+   ============================================= */
+
+.page {
+  min-height: 100vh;
+  padding-top: var(--nav-h);
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Hero ────────────────────────────────────── */
+.hero {
+  position: relative;
+  padding: 72px 24px 80px;
+  text-align: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.heroGlow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(225,29,72,0.14) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 80%, rgba(124,58,237,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.heroDeco {
+  position: absolute;
+  right: -40px;
+  bottom: -20px;
+  font-family: var(--font-display);
+  font-size: 280px;
+  font-weight: 900;
+  line-height: 1;
+  color: rgba(225,29,72,0.04);
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.heroTitle em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.heroSub {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 36px;
+}
+
+/* Toggle mensal / anual */
+.billingToggle {
+  display: inline-flex;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 99px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.billingBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.billingBtnActive {
+  background: var(--accent);
+  color: #fff;
+}
+
+.billingDiscount {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 99px;
+  background: rgba(255,255,255,0.2);
+  letter-spacing: 0.02em;
+}
+
+.billingBtnActive .billingDiscount {
+  background: rgba(255,255,255,0.25);
+}
+
+/* ── Planos ──────────────────────────────────── */
+.plansSection {
+  padding: 0 24px 64px;
+}
+
+.plansGrid {
+  max-width: 960px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.planCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.planCard:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+.planCardHighlight {
+  border-color: rgba(225,29,72,0.4);
+  background: linear-gradient(160deg, #1a0b12 0%, #18181f 60%);
+  box-shadow: 0 0 0 1px rgba(225,29,72,0.15), 0 20px 48px rgba(225,29,72,0.1);
+}
+.planCardHighlight:hover {
+  border-color: rgba(225,29,72,0.6);
+}
+
+.planCardCurrent {
+  opacity: 0.7;
+}
+
+.planBadge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 14px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.planHeader {
+  margin-bottom: 24px;
+}
+
+.planName {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.planPrice {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  line-height: 1;
+}
+
+.planPriceCurrency {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  align-self: flex-start;
+  margin-top: 6px;
+}
+
+.planPriceValue {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+}
+
+.planPricePer {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.planYearlyNote {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.planFeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+  flex: 1;
+}
+
+.planFeatureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.planCheck {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.planCheckAccent {
+  color: var(--accent);
+}
+
+.planCta {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+}
+.planCta:hover:not(:disabled) {
+  background: rgba(255,255,255,0.1);
+  color: var(--text-primary);
+}
+
+.planCtaAccent {
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+}
+.planCtaAccent:hover:not(:disabled) {
+  background: var(--accent-dim);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(225,29,72,0.3);
+}
+
+.planCtaCurrent {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Diferenciais ────────────────────────────── */
+.perksSection {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 24px;
+}
+
+.perksInner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.perk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 28px;
+}
+
+.perkIcon {
+  color: var(--accent);
+  display: flex;
+}
+
+.perkLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.perkDiv {
+  width: 1px;
+  height: 24px;
+  background: var(--border-strong);
+  flex-shrink: 0;
+}
+
+/* ── FAQ ─────────────────────────────────────── */
+.faqSection {
+  padding: 64px 24px;
+}
+
+.faqInner {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.faqTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.faqItem {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.faqItemOpen {
+  border-color: var(--border-strong);
+}
+
+.faqQuestion {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.faqQuestion:hover { color: var(--accent); }
+
+.faqAnswer {
+  padding: 0 20px 18px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Rodapé ──────────────────────────────────── */
+.pageFooter {
+  padding: 24px;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+.pageFooterText {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.pageFooterLink {
+  color: var(--accent);
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.pageFooterLink:hover { opacity: 0.8; }
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 768px) {
+  .hero { padding: 56px 20px 64px; }
+
+  .plansSection { padding: 0 16px 48px; }
+  .plansGrid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+
+  .planCardHighlight {
+    order: -1;
+  }
+
+  .perksInner {
+    gap: 0;
+  }
+  .perk { padding: 8px 16px; }
+  .perkDiv { height: 20px; }
+
+  .faqSection { padding: 48px 16px; }
+}
+
+@media (max-width: 480px) {
+  .heroTitle { font-size: 26px; }
+  .heroSub { font-size: 14px; }
+
+  .billingBtn { padding: 8px 14px; }
+
+  .perk { padding: 8px 12px; }
+  .perkLabel { font-size: 12px; }
+}
