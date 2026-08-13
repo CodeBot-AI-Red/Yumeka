@@ -62,7 +62,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .heroBanner {
@@ -70,6 +70,7 @@
   background: linear-gradient(135deg, #1a0a12 0%, #2a0d1e 40%, #0f0a1a 100%);
   position: relative;
   overflow: hidden;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .heroDeco {
