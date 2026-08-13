@@ -6,6 +6,8 @@
   min-height: 100vh;
   padding-top: var(--nav-h);
   background: var(--bg-base);
+  /* Garantia extra de que a página não corta nada */
+  overflow: visible !important;
 }
 
 .container {
@@ -15,6 +17,7 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
+  overflow: visible !important;
 }
 
 /* ── Loading / Empty states ──────────────────── */
@@ -62,17 +65,18 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  /* CORREÇÃO: removemos overflow:hidden para não cortar o avatar */
-  overflow: visible; /* ou remova a linha completamente */
+  overflow: visible !important;  /* ← CORREÇÃO: garante que nada seja cortado */
+  position: relative;            /* Cria contexto de empilhamento */
 }
 
 /* Faixa decorativa no topo */
 .heroBanner {
   height: 90px;
   background: linear-gradient(135deg, #1a0a12 0%, #2a0d1e 40%, #0f0a1a 100%);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0; /* ← CORREÇÃO: arredonda apenas em cima */
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   position: relative;
   flex-shrink: 0;
+  overflow: visible !important;  /* Garantia extra */
 }
 
 .heroDeco {
@@ -94,21 +98,23 @@
   align-items: flex-start;
   gap: 16px;
   padding: 0 28px 28px;
-  /* (opcional) arredondar cantos inferiores se o body tiver fundo próprio */
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  overflow: visible !important;  /* Garantia extra */
 }
 
 /* ── Avatar ──────────────────────────────────── */
-/* 
+/*
   Estratégia: avatar fica dentro do heroBody mas
   puxa pra cima com margin-top negativo de METADE
   da altura do avatar (80px / 2 = 40px).
-  Agora o contêiner .hero não tem overflow:hidden,
-  então o avatar aparece por inteiro.
+  Como agora todos os pais têm overflow:visible,
+  o avatar aparece por inteiro.
 */
 .avatarWrap {
   flex-shrink: 0;
   margin-top: -40px;
+  position: relative;  /* Essencial para o z-index funcionar */
+  z-index: 10;         /* Garante que o avatar fique sobre o banner */
 }
 
 .avatarImg {
