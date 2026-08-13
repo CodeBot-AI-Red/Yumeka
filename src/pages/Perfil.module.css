@@ -288,6 +288,21 @@
   gap: 12px;
 }
 
+@media (max-width: 480px) {
+  .statsSection {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 4px;
+  }
+  .statsSection::-webkit-scrollbar { display: none; }
+  .statCard {
+    flex: 0 0 140px;
+  }
+}
+
 .statCard {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -457,7 +472,6 @@
   .heroInfo { padding-top: 0; }
   .displayName { font-size: 18px; }
 
-  .statsSection { grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .statCard { padding: 14px 10px; }
   .statValue { font-size: 18px; }
   .statLabel { font-size: 10px; }
