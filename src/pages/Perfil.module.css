@@ -62,15 +62,15 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  overflow: visible;
+  overflow: hidden;
 }
 
+/* Faixa decorativa no topo */
 .heroBanner {
-  height: 80px;
+  height: 90px;
   background: linear-gradient(135deg, #1a0a12 0%, #2a0d1e 40%, #0f0a1a 100%);
   position: relative;
-  overflow: hidden;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  flex-shrink: 0;
 }
 
 .heroDeco {
@@ -86,17 +86,28 @@
   pointer-events: none;
 }
 
+/* Linha com avatar + info abaixo do banner */
 .heroBody {
   display: flex;
-  align-items: flex-end;
-  gap: 20px;
+  align-items: flex-start;
+  gap: 16px;
   padding: 0 28px 28px;
 }
 
 /* ── Avatar ──────────────────────────────────── */
+/* 
+  Estratégia: avatar fica dentro do heroBody mas
+  puxa pra cima com margin-top negativo de METADE
+  da altura do avatar (80px / 2 = 40px).
+  O hero tem overflow:hidden → o que soluciona o
+  corte é dar padding-top SUFICIENTE no heroBody
+  para o avatar não ser cortado pelo container.
+  Como overflow:hidden corta, removemos e deixamos
+  o border-radius via clip-path no banner.
+*/
 .avatarWrap {
-  margin-top: -36px;
   flex-shrink: 0;
+  margin-top: -40px;
 }
 
 .avatarImg {
@@ -106,6 +117,7 @@
   object-fit: cover;
   border: 3px solid var(--bg-card);
   box-shadow: 0 0 0 1px var(--border-strong);
+  display: block;
 }
 
 .avatarFallback {
@@ -128,7 +140,7 @@
 .heroInfo {
   flex: 1;
   min-width: 0;
-  padding-top: 40px;
+  padding-top: 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -464,13 +476,13 @@
 @media (max-width: 600px) {
   .container { padding: 32px 16px 64px; gap: 24px; }
 
-  .heroBanner { height: 60px; }
-  .heroBody { flex-direction: column; align-items: flex-start; gap: 12px; padding: 0 20px 24px; }
-  .avatarWrap { margin-top: -28px; }
+  .heroBanner { height: 70px; }
+  .heroBody { padding: 0 20px 24px; gap: 12px; }
+  .avatarWrap { margin-top: -36px; }
   .avatarImg,
-  .avatarFallback { width: 64px; height: 64px; }
-  .avatarFallback { font-size: 18px; }
-  .heroInfo { padding-top: 0; }
+  .avatarFallback { width: 72px; height: 72px; }
+  .avatarFallback { font-size: 20px; }
+  .heroInfo { padding-top: 8px; }
   .displayName { font-size: 18px; }
 
   .statCard { padding: 14px 10px; }
