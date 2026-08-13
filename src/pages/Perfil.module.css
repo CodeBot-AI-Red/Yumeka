@@ -62,13 +62,15 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  /* CORREÇÃO: removemos overflow:hidden para não cortar o avatar */
+  overflow: visible; /* ou remova a linha completamente */
 }
 
 /* Faixa decorativa no topo */
 .heroBanner {
   height: 90px;
   background: linear-gradient(135deg, #1a0a12 0%, #2a0d1e 40%, #0f0a1a 100%);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0; /* ← CORREÇÃO: arredonda apenas em cima */
   position: relative;
   flex-shrink: 0;
 }
@@ -92,6 +94,8 @@
   align-items: flex-start;
   gap: 16px;
   padding: 0 28px 28px;
+  /* (opcional) arredondar cantos inferiores se o body tiver fundo próprio */
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
 /* ── Avatar ──────────────────────────────────── */
@@ -99,11 +103,8 @@
   Estratégia: avatar fica dentro do heroBody mas
   puxa pra cima com margin-top negativo de METADE
   da altura do avatar (80px / 2 = 40px).
-  O hero tem overflow:hidden → o que soluciona o
-  corte é dar padding-top SUFICIENTE no heroBody
-  para o avatar não ser cortado pelo container.
-  Como overflow:hidden corta, removemos e deixamos
-  o border-radius via clip-path no banner.
+  Agora o contêiner .hero não tem overflow:hidden,
+  então o avatar aparece por inteiro.
 */
 .avatarWrap {
   flex-shrink: 0;
