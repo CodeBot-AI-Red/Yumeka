@@ -1,12 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import type { Anime } from '../types/anime'
-import { animeService } from '../services/animeService'
-import AnimeBanner from '../components/anime/AnimeBanner'
-import AnimeCarousel from '../components/anime/AnimeCarousel'
+import { ORIGINAIS } from '../data/originais'
+import type { OriginalAnime } from '../data/originais'
 import styles from './Home.module.css'
 
-/* ─── Ícones inline ─────────────────────────────────────────── */
+/* ─── Ícones ─────────────────────────────────────────────────── */
 function PlayIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -15,110 +13,110 @@ function PlayIcon() {
   )
 }
 
-function StarIcon() {
+function BellIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01z" />
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
     </svg>
   )
 }
 
-function ChevronRightIcon() {
+/* ─── Badge de status ─────────────────────────────────────────── */
+function StatusBadge({ status }: { status: OriginalAnime['status'] }) {
+  const map = {
+    em_breve:    { label: 'Em breve',     color: '#a78bfa' },
+    em_exibicao: { label: 'Em exibição',  color: '#34d399' },
+    completo:    { label: 'Completo',     color: '#9490a8' },
+  }
+  const { label, color } = map[status]
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <polyline points="9 18 15 12 9 6" />
-    </svg>
+    <span className={styles.statusBadge} style={{ '--status-color': color } as React.CSSProperties}>
+      <span className={styles.statusDot} />
+      {label}
+    </span>
   )
 }
 
-/* ─── Stat card do topo ──────────────────────────────────────── */
-interface StatProps { value: string; label: string }
-function Stat({ value, label }: StatProps) {
+/* ─── Hero banner (usa banner landscape) ─────────────────────── */
+function HeroBanner({ anime }: { anime: OriginalAnime }) {
   return (
-    <div className={styles.stat}>
-      <span className={styles.statValue}>{value}</span>
-      <span className={styles.statLabel}>{label}</span>
+    <div className={styles.hero}>
+      <div
+        className={styles.heroBg}
+        style={{ backgroundImage: `url(${anime.bannerUrl})` }}
+      />
+      <div className={styles.heroGradLeft} />
+      <div className={styles.heroGradBottom} />
+
+      <div className={styles.heroContent}>
+        <StatusBadge status={anime.status} />
+
+        <p className={styles.heroSubtitle}>{anime.subtitulo}</p>
+        <h1 className={styles.heroTitle}>{anime.tituloRomaji}</h1>
+        <p className={styles.heroKanji}>{anime.titulo}</p>
+        <p className={styles.heroSynopsis}>{anime.sinopse}</p>
+
+        <div className={styles.heroGenres}>
+          {anime.generos.map(g => (
+            <span key={g} className={styles.heroGenre}>{g}</span>
+          ))}
+        </div>
+
+        <div className={styles.heroCtas}>
+          {anime.status === 'em_exibicao' ? (
+            <Link to={`/watch/${anime.id}-1`} className={styles.btnPlay}>
+              <PlayIcon /> Assistir agora
+            </Link>
+          ) : (
+            <button className={styles.btnNotify}>
+              <BellIcon /> Avisar quando estrear
+            </button>
+          )}
+          <Link to={`/anime/${anime.id}`} className={styles.btnInfo}>
+            Saiba mais
+          </Link>
+        </div>
+      </div>
     </div>
   )
 }
 
-/* ─── Card de destaque horizontal ───────────────────────────── */
-interface FeaturedCardProps { anime: Anime; rank: number }
-function FeaturedCard({ anime, rank }: FeaturedCardProps) {
-  const img = anime.images.webp?.large_image_url || anime.images.jpg.large_image_url
-  const synopsis = anime.synopsis
-    ? anime.synopsis.slice(0, 100) + (anime.synopsis.length > 100 ? '…' : '')
-    : ''
-
+/* ─── Card vertical (usa poster portrait) ─────────────────────── */
+function OriginalCard({ anime }: { anime: OriginalAnime }) {
   return (
-    <Link to={`/anime/${anime.mal_id}`} className={styles.featCard}>
-      <span className={styles.featRank}>{String(rank).padStart(2, '0')}</span>
-      <div className={styles.featPoster}>
-        <img src={img} alt={anime.title} loading="lazy" />
-      </div>
-      <div className={styles.featInfo}>
-        <p className={styles.featTitle}>{anime.title}</p>
-        {synopsis && <p className={styles.featSynopsis}>{synopsis}</p>}
-        <div className={styles.featMeta}>
-          {anime.score && (
-            <span className={styles.featScore}><StarIcon />{anime.score.toFixed(1)}</span>
-          )}
-          {anime.genres[0] && (
-            <span className={styles.featGenre}>{anime.genres[0].name}</span>
-          )}
+    <Link to={`/anime/${anime.id}`} className={styles.card}>
+      <div className={styles.cardPoster}>
+        <img src={anime.posterUrl} alt={anime.tituloRomaji} loading="lazy" />
+        <div className={styles.cardOverlay}>
+          {anime.status === 'em_exibicao'
+            ? <span className={styles.cardPlayIcon}><PlayIcon /></span>
+            : <span className={styles.cardComingSoon}>Em breve</span>
+          }
+        </div>
+        <div className={styles.cardStatusPin}>
+          <StatusBadge status={anime.status} />
         </div>
       </div>
-      <span className={styles.featArrow}><ChevronRightIcon /></span>
+      <div className={styles.cardInfo}>
+        <p className={styles.cardRomaji}>{anime.tituloRomaji}</p>
+        <p className={styles.cardKanji}>{anime.titulo}</p>
+        <div className={styles.cardMeta}>
+          {anime.generos.slice(0, 2).map(g => (
+            <span key={g} className={styles.cardGenre}>{g}</span>
+          ))}
+        </div>
+      </div>
     </Link>
   )
 }
 
-/* ─── Skeleton do card de destaque ──────────────────────────── */
-function FeaturedCardSkeleton() {
-  return <div className={`${styles.featCard} ${styles.featCardSkeleton}`} aria-hidden="true" />
-}
-
 /* ─── Componente principal ───────────────────────────────────── */
 export default function Home() {
-  const [airing, setAiring] = useState<Anime[]>([])
-  const [popular, setPopular] = useState<Anime[]>([])
-  const [seasonal, setSeasonal] = useState<Anime[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const ctaRef = useRef<HTMLElement>(null)
 
-  const fetchAll = useCallback(async (signal: { cancelled: boolean }) => {
-    try {
-      setError(null)
-      setLoading(true)
-      const airingData = await animeService.getTopAiring()
-      if (signal.cancelled) return
-      setAiring(airingData)
-      setLoading(false)
-
-      const [popularData, seasonalData] = await Promise.all([
-        animeService.getTopPopular(),
-        animeService.getSeasonNow(),
-      ])
-      if (signal.cancelled) return
-      setPopular(popularData)
-      setSeasonal(seasonalData)
-    } catch (err) {
-      if (!signal.cancelled) {
-        setError('Não foi possível carregar os animes agora.')
-        setLoading(false)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    const signal = { cancelled: false }
-    fetchAll(signal)
-    return () => { signal.cancelled = true }
-  }, [fetchAll])
-
-  /* Efeito parallax suave no CTA ao scroll */
+  /* Parallax suave no CTA */
   useEffect(() => {
     const el = ctaRef.current
     if (!el) return
@@ -131,87 +129,35 @@ export default function Home() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const hero = airing[0] ?? null
-  const topPopular = popular.slice(0, 5)
+  const hero = ORIGINAIS[0]
 
   return (
     <main className={styles.main}>
 
-      {/* ── Hero banner ─────────────────────────────────────── */}
-      <AnimeBanner anime={hero} loading={loading} />
+      {/* ── Hero ────────────────────────────────────────────── */}
+      <HeroBanner anime={hero} />
 
-      {/* ── Barra de stats ──────────────────────────────────── */}
-      <div className={styles.statsBar}>
-        <Stat value="12.000+" label="títulos no catálogo" />
-        <span className={styles.statsDivider} aria-hidden="true" />
-        <Stat value="4K HDR" label="qualidade máxima" />
-        <span className={styles.statsDivider} aria-hidden="true" />
-        <Stat value="0" label="anúncios" />
-        <span className={styles.statsDivider} aria-hidden="true" />
-        <Stat value="Novo" label="episódio toda semana" />
-      </div>
-
-      {error && (
-        <div className={styles.error} role="alert">
-          <p>{error}</p>
-          <button className={styles.errorBtn} onClick={() => fetchAll({ cancelled: false })}>
-            Tentar novamente
-          </button>
-        </div>
-      )}
-
-      {/* ── Carrosséis + Top Popular ────────────────────────── */}
-      <div className={styles.sections}>
-
-        {/* Seção em exibição */}
-        <AnimeCarousel
-          title="Em exibição agora"
-          animes={airing.slice(1)}
-          loading={loading}
-        />
-
-        {/* Bloco duas colunas: temporada | top popular */}
-        <div className={styles.split}>
-          <div className={styles.splitCarousel}>
-            <AnimeCarousel
-              title="Temporada atual"
-              animes={seasonal}
-              loading={loading && seasonal.length === 0}
-            />
-          </div>
-
-          {/* Top 5 popular — lista vertical */}
-          <section className={styles.topSection}>
-            <h2 className={styles.topTitle}>
-              <span className={styles.topTitleBar} aria-hidden="true" />
-              Top 5 populares
-            </h2>
-            <div className={styles.topList}>
-              {loading || topPopular.length === 0
-                ? Array.from({ length: 5 }).map((_, i) => (
-                    <FeaturedCardSkeleton key={i} />
-                  ))
-                : topPopular.map((anime, i) => (
-                    <FeaturedCard key={anime.mal_id} anime={anime} rank={i + 1} />
-                  ))}
-            </div>
-            <Link to="/browse?sort=popular" className={styles.topMore}>
-              Ver todos <ChevronRightIcon />
-            </Link>
-          </section>
+      {/* ── Catálogo de originais ────────────────────────────── */}
+      <section className={styles.catalog}>
+        <div className={styles.catalogHeader}>
+          <h2 className={styles.catalogTitle}>
+            <span className={styles.titleBar} aria-hidden="true" />
+            Originais Yumeka
+          </h2>
+          <p className={styles.catalogSub}>
+            Títulos criados e produzidos pela Yumeka
+          </p>
         </div>
 
-        {/* Mais populares */}
-        <AnimeCarousel
-          title="Mais populares"
-          animes={popular.slice(5)}
-          loading={loading && popular.length === 0}
-        />
-      </div>
+        <div className={styles.cardGrid}>
+          {ORIGINAIS.map(anime => (
+            <OriginalCard key={anime.id} anime={anime} />
+          ))}
+        </div>
+      </section>
 
       {/* ── CTA premium ─────────────────────────────────────── */}
       <section className={styles.cta} ref={ctaRef} aria-label="Planos premium">
-        {/* Camadas decorativas */}
         <span className={styles.ctaDeco1} aria-hidden="true">夢</span>
         <span className={styles.ctaDeco2} aria-hidden="true">夢</span>
         <div className={styles.ctaGlow} aria-hidden="true" />
