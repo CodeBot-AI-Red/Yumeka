@@ -21,7 +21,7 @@
 .notFoundBack {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin-top: 8px;
   font-size: 14px;
   font-weight: 600;
@@ -31,12 +31,13 @@
 }
 .notFoundBack:hover { gap: 12px; }
 
-/* ── Hero ────────────────────────────────────────────────────── */
+/* ── Página ──────────────────────────────────────────────────── */
 .page {
   min-height: 100vh;
   padding-bottom: 80px;
 }
 
+/* ── Hero ────────────────────────────────────────────────────── */
 .hero {
   position: relative;
   min-height: 560px;
@@ -80,7 +81,7 @@
   margin: 0 auto;
 }
 
-/* Poster */
+/* ── Poster ──────────────────────────────────────────────────── */
 .posterWrap {
   flex-shrink: 0;
   width: 200px;
@@ -96,12 +97,11 @@
   object-fit: cover;
 }
 
-/* Info */
+/* ── Info ────────────────────────────────────────────────────── */
 .heroInfo {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0;
   min-width: 0;
 }
 
@@ -164,7 +164,6 @@
   margin-bottom: 20px;
 }
 
-/* Meta */
 .meta {
   display: flex;
   align-items: center;
@@ -188,7 +187,6 @@
   color: var(--text-secondary);
 }
 
-/* Gêneros */
 .genres {
   display: flex;
   gap: 6px;
@@ -203,7 +201,6 @@
   color: rgba(255,255,255,0.6);
 }
 
-/* Sinopse */
 .synopsis {
   font-size: 14px;
   color: rgba(241,240,245,0.75);
@@ -212,7 +209,6 @@
   margin-bottom: 28px;
 }
 
-/* CTAs */
 .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
 
 .btnPlay {
@@ -258,7 +254,7 @@
 .section {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 48px 52px 0;
+  padding: 52px 52px 0;
 }
 
 .sectionTitle {
@@ -336,84 +332,59 @@
   line-height: 1.65;
 }
 
-/* ── Temporadas ──────────────────────────────────────────────── */
-.seasonList {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+/* ── Temporada 1 ─────────────────────────────────────────────── */
+.t1Card {
+  padding: 24px 28px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
 }
 
-.seasonItem {
-  display: flex;
-  gap: 20px;
-  padding: 20px 20px;
-  border-radius: var(--radius);
-  background: transparent;
-  transition: background 0.2s;
-  align-items: flex-start;
-}
-.seasonItem:hover { background: var(--bg-surface); }
-
-.seasonNum {
-  font-size: 28px;
-  font-weight: 900;
-  color: var(--text-muted);
-  letter-spacing: -0.04em;
-  line-height: 1;
-  flex-shrink: 0;
-  width: 40px;
-  text-align: center;
-  padding-top: 2px;
-  font-variant-numeric: tabular-nums;
-}
-.seasonItem:first-child .seasonNum { color: var(--accent); }
-
-.seasonBody { flex: 1; min-width: 0; }
-.seasonHead {
+.t1Head {
   display: flex;
   align-items: baseline;
-  gap: 12px;
-  margin-bottom: 6px;
+  gap: 16px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
 }
-.seasonTitulo {
-  font-size: 15px;
+
+.t1Num {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--accent);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.t1Titulo {
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);
+  margin-bottom: 4px;
 }
-.seasonEps {
+
+.t1Eps {
   font-size: 11px;
   color: var(--text-muted);
   background: var(--bg-hover);
   padding: 2px 8px;
   border-radius: 4px;
 }
-.seasonDesc {
+
+.t1Desc {
   font-size: 13px;
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
-/* ── Inspirações ─────────────────────────────────────────────── */
-.inspList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 8px;
-  list-style: none;
-}
-.inspItem {
-  font-size: 13px;
-  color: var(--text-secondary);
-  padding: 10px 14px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  line-height: 1.5;
-  transition: border-color 0.2s, color 0.2s;
-}
-.inspItem:hover {
-  border-color: var(--border-strong);
-  color: var(--text-primary);
+.t1Aviso {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+  padding-left: 4px;
 }
 
 /* ── Responsive ──────────────────────────────────────────────── */
@@ -427,7 +398,6 @@
   .posterWrap { width: 140px; }
   .section { padding: 40px 24px 0; }
   .charGrid { grid-template-columns: 1fr; }
-  .inspList { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {

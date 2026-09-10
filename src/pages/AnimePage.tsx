@@ -46,7 +46,8 @@ function FilmIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 2v20M17 2v20M2 12h20M2 7h5M17 7h5M2 17h5M17 17h5"/>
+      <rect x="2" y="2" width="20" height="20" rx="2"/>
+      <path d="M7 2v20M17 2v20M2 12h20M2 7h5M17 7h5M2 17h5M17 17h5"/>
     </svg>
   )
 }
@@ -69,16 +70,16 @@ export default function AnimePage() {
   }
 
   const statusMap = {
-    em_breve:    { label: 'Em breve',     color: '#a78bfa' },
-    em_exibicao: { label: 'Em exibição',  color: '#34d399' },
-    completo:    { label: 'Completo',     color: '#9490a8' },
+    em_breve:    { label: 'Em breve',    color: '#a78bfa' },
+    em_exibicao: { label: 'Em exibição', color: '#34d399' },
+    completo:    { label: 'Completo',    color: '#9490a8' },
   }
   const { label: statusLabel, color: statusColor } = statusMap[anime.status]
 
   return (
     <main className={styles.page}>
 
-      {/* ── Hero com banner ─────────────────────────────────── */}
+      {/* ── Hero ────────────────────────────────────────────── */}
       <div className={styles.hero}>
         <div
           className={styles.heroBg}
@@ -90,11 +91,7 @@ export default function AnimePage() {
         <div className={styles.heroInner}>
           {/* Poster */}
           <div className={styles.posterWrap}>
-            <img
-              src={anime.posterUrl}
-              alt={anime.tituloRomaji}
-              className={styles.poster}
-            />
+            <img src={anime.posterUrl} alt={anime.tituloRomaji} className={styles.poster} />
           </div>
 
           {/* Info */}
@@ -144,8 +141,8 @@ export default function AnimePage() {
               ))}
             </div>
 
-            {/* Sinopse */}
-            <p className={styles.synopsis}>{anime.sinopseCompleta ?? anime.sinopse}</p>
+            {/* Sinopse — só a curta, sem spoilers */}
+            <p className={styles.synopsis}>{anime.sinopse}</p>
 
             {/* CTAs */}
             <div className={styles.ctas}>
@@ -163,15 +160,15 @@ export default function AnimePage() {
         </div>
       </div>
 
-      {/* ── Personagens ─────────────────────────────────────── */}
-      {anime.personagens.length > 0 && (
+      {/* ── Personagens públicos ─────────────────────────────── */}
+      {anime.personagensPublicos && anime.personagensPublicos.length > 0 && (
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>
             <span className={styles.titleBar} aria-hidden="true" />
             Personagens
           </h2>
           <div className={styles.charGrid}>
-            {anime.personagens.map(p => (
+            {anime.personagensPublicos.map(p => (
               <div key={p.nome} className={styles.charCard}>
                 <div className={styles.charAvatar}>
                   {p.nome.slice(0, 2).toUpperCase()}
@@ -187,42 +184,26 @@ export default function AnimePage() {
         </section>
       )}
 
-      {/* ── Temporadas ──────────────────────────────────────── */}
-      {anime.temporadasInfo && anime.temporadasInfo.length > 0 && (
+      {/* ── Temporada 1 apenas ──────────────────────────────── */}
+      {anime.temporada1 && (
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>
             <span className={styles.titleBar} aria-hidden="true" />
-            Estrutura de temporadas
+            Primeira temporada
           </h2>
-          <div className={styles.seasonList}>
-            {anime.temporadasInfo.map(t => (
-              <div key={t.numero} className={styles.seasonItem}>
-                <div className={styles.seasonNum}>{String(t.numero).padStart(2, '0')}</div>
-                <div className={styles.seasonBody}>
-                  <div className={styles.seasonHead}>
-                    <p className={styles.seasonTitulo}>{t.titulo}</p>
-                    <span className={styles.seasonEps}>{t.episodios}</span>
-                  </div>
-                  <p className={styles.seasonDesc}>{t.descricao}</p>
-                </div>
+          <div className={styles.t1Card}>
+            <div className={styles.t1Head}>
+              <span className={styles.t1Num}>01</span>
+              <div>
+                <p className={styles.t1Titulo}>{anime.temporada1.titulo}</p>
+                <span className={styles.t1Eps}>{anime.temporada1.episodios}</span>
               </div>
-            ))}
+            </div>
+            <p className={styles.t1Desc}>{anime.temporada1.descricao}</p>
           </div>
-        </section>
-      )}
-
-      {/* ── Inspirações ─────────────────────────────────────── */}
-      {anime.inspiracoes && anime.inspiracoes.length > 0 && (
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>
-            <span className={styles.titleBar} aria-hidden="true" />
-            Referências e inspirações
-          </h2>
-          <ul className={styles.inspList}>
-            {anime.inspiracoes.map(i => (
-              <li key={i} className={styles.inspItem}>{i}</li>
-            ))}
-          </ul>
+          <p className={styles.t1Aviso}>
+            As temporadas seguintes serão reveladas conforme o anime for ao ar.
+          </p>
         </section>
       )}
 
