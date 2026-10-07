@@ -1,0 +1,53 @@
+/* Kinetic Glass presentation only. Existing navigation, accounts and playback remain unchanged. */
+:root {
+  --kinetic-pink: oklch(0.67 0.24 355);
+  --kinetic-ink: oklch(0.13 0.025 285);
+  --kinetic-glass: oklch(0.22 0.025 285 / 65%);
+  --kinetic-sheen: oklch(0.97 0.005 285 / 8%);
+  --kinetic-shadow: 0 12px 36px oklch(0.05 0.01 285 / 25%);
+  --kinetic-action: linear-gradient(110deg, var(--accent), var(--kinetic-pink));
+}
+body { background-image: linear-gradient(145deg, color-mix(in oklch, var(--accent) 7%, transparent), transparent 45%, color-mix(in oklch, var(--kinetic-pink) 4%, transparent)); background-attachment: fixed; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+button, a, input, select { -webkit-tap-highlight-color: transparent; }
+button, input, select { min-height: 44px; }
+input, select { color: var(--text-primary); }
+/* CSS Modules keep their original names; attribute selectors target only matching presentation classes. */
+[class*="_hero_"] { height: 620px; margin-bottom: 48px; }
+[class*="_heroBg_"] { filter: brightness(0.85); animation: none; transform: none; }
+[class*="_heroGradLeft_"] { background: linear-gradient(to right, var(--bg-base) 0%, color-mix(in oklch, var(--bg-base) 88%, transparent) 32%, color-mix(in oklch, var(--bg-base) 15%, transparent) 80%, transparent); }
+[class*="_heroContent_"] { max-width: 660px; padding: 0 48px; bottom: 52px; }
+[class*="_heroTitle_"] { font-family: var(--font-display); font-size: 52px; font-weight: 400; letter-spacing: 0; line-height: 1.1; overflow-wrap: anywhere; text-shadow: none; }
+[class*="_heroSubtitle_"] { color: var(--accent); letter-spacing: 0; }
+[class*="_heroKanji_"] { color: var(--text-secondary); letter-spacing: 0; font-family: var(--font-body); }
+[class*="_heroSynopsis_"] { color: var(--text-primary); max-width: 480px; }
+[class*="_heroGenre_"], [class*="_cardGenre_"] { border-color: var(--border-strong); color: var(--text-secondary); background: var(--kinetic-glass); border-radius: 8px; letter-spacing: 0; }
+[class*="_statusBadge_"] { color: var(--accent); letter-spacing: 0; }
+[class*="_btnNotify_"], [class*="_btnPlay_"], [class*="_ctaBtn_"] { background: var(--kinetic-action); border: 1px solid transparent; color: var(--kinetic-ink); font-weight: 700; border-radius: 8px; box-shadow: none; min-height: 44px; }
+[class*="_btnNotify_"]:hover, [class*="_btnPlay_"]:hover, [class*="_ctaBtn_"]:hover { background: var(--kinetic-action); box-shadow: var(--kinetic-shadow); transform: translateY(-2px); color: var(--kinetic-ink); }
+[class*="_btnInfo_"], [class*="_ctaBtnGhost_"] { background: var(--kinetic-glass); backdrop-filter: blur(16px); color: var(--text-primary); border: 1px solid var(--border-strong); border-radius: 8px; min-height: 44px; }
+[class*="_catalog_"] { max-width: 1280px; margin-inline: auto; }
+[class*="_catalogTitle_"], [class*="_ctaTitle_"] { font-family: var(--font-display); font-weight: 400; letter-spacing: 0; }
+[class*="_card_"] { border-radius: 8px; background: var(--kinetic-glass); border: 1px solid var(--border); backdrop-filter: blur(16px); transition: transform 180ms ease, border-color 180ms ease; }
+[class*="_card_"]:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--kinetic-shadow); }
+[class*="_cardRomaji_"] { letter-spacing: 0; overflow-wrap: anywhere; }
+[class*="_cta_"] { background: transparent; border-radius: 0; border: 0; border-top: 1px solid var(--border); }
+[class*="_ctaGlow_"], [class*="_ctaDeco1_"], [class*="_ctaDeco2_"] { display: none; }
+[class*="_ctaTitle_"] { font-size: 40px; line-height: 1.2; }
+[class*="_ctaTitle_"] em { color: var(--accent); }
+header { backdrop-filter: blur(18px); }
+@media (max-width: 640px) {
+ [class*="_hero_"] { height: 720px; margin-bottom: 32px; }
+ [class*="_heroBg_"] { background-position: center top; background-size: auto 420px; background-repeat: no-repeat; }
+ [class*="_heroGradLeft_"] { background: linear-gradient(to top, var(--bg-base) 35%, transparent 80%); }
+ [class*="_heroContent_"] { bottom: 24px; padding: 0 20px; max-width: 100%; }
+ [class*="_heroTitle_"] { font-size: 34px; }
+ [class*="_heroSynopsis_"] { font-size: 13px; line-height: 1.55; }
+ [class*="_heroCtas_"] { gap: 8px; }
+ [class*="_btnNotify_"], [class*="_btnPlay_"], [class*="_btnInfo_"] { padding: 12px 16px; }
+ [class*="_ctaTitle_"] { font-size: 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+ html { scroll-behavior: auto; }
+ *, *::before, *::after { animation: none !important; transition: none !important; }
+}
