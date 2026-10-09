@@ -1,35 +1,14 @@
 @import './kinetic.css';
-
 :root {
-  --bg-base: oklch(0.13 0.025 285);
-  --bg-surface: oklch(0.18 0.024 285);
-  --bg-card: oklch(0.22 0.025 285 / 70%);
-  --bg-hover: oklch(0.27 0.03 285);
-  --accent: oklch(0.86 0.16 184);
-  --accent-glow: oklch(0.86 0.16 184 / 20%);
-  --accent-dim: oklch(0.76 0.14 184);
-  --text-primary: oklch(0.97 0.005 285);
-  --text-secondary: oklch(0.74 0.015 285);
-  --text-muted: oklch(0.64 0.015 285);
-  --border: oklch(0.97 0.005 285 / 10%);
-  --border-strong: oklch(0.97 0.005 285 / 20%);
-  --gradient-hero: linear-gradient(to right, var(--bg-base) 30%, transparent 100%);
-  --gradient-card: linear-gradient(to top, var(--bg-base), transparent);
-  --font-display: 'Anton', 'Noto Sans JP', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --nav-h: 68px;
-  --radius: 8px;
-  --radius-lg: 8px;
-  --section-gap: 56px;
+ --bg-base: oklch(0.13 0.01 285); --bg-surface: oklch(0.18 0.01 285); --bg-card: oklch(0.22 0.01 285 / 70%); --bg-hover: oklch(0.27 0.01 285);
+ --accent: oklch(0.586 0.222 17.58); --accent-glow: oklch(0.586 0.222 17.58 / 20%); --accent-dim: oklch(0.525 0.21 17.58); --accent-text: oklch(0.75 0.15 17.58); --accent-foreground: oklch(0.98 0 0);
+ --text-primary: oklch(0.97 0.005 285); --text-secondary: oklch(0.74 0.015 285); --text-muted: oklch(0.64 0.015 285); --border: oklch(0.97 0.005 285 / 10%); --border-strong: oklch(0.97 0.005 285 / 20%);
+ --color-bg: var(--bg-base); --color-surface: var(--bg-surface); --color-text: var(--text-primary); --color-text-muted: var(--text-secondary);
+ --gradient-hero: linear-gradient(to right,var(--bg-base) 30%,transparent 100%); --gradient-card: linear-gradient(to top,var(--bg-base),transparent); --font-display: 'Anton','Noto Sans JP',sans-serif; --font-body: 'Inter',sans-serif; --nav-h: 68px; --radius: 8px; --radius-lg: 8px; --section-gap: 56px;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { font-family: var(--font-body); background: var(--bg-base); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-a { text-decoration: none; color: inherit; }
-img { display: block; max-width: 100%; }
-button { cursor: pointer; border: none; background: none; font-family: inherit; }
-ul { list-style: none; }
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-base); }
-::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 99px; }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body { font-family:var(--font-body); background:var(--bg-base); color:var(--text-primary); line-height:1.6; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+a { text-decoration:none; color:inherit; } img { display:block; max-width:100%; } button { cursor:pointer; border:none; background:none; font-family:inherit; } ul { list-style:none; }
+::-webkit-scrollbar { width:6px; height:6px; } ::-webkit-scrollbar-track { background:var(--bg-base); } ::-webkit-scrollbar-thumb { background:var(--text-muted); border-radius:99px; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
